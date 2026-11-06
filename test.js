@@ -112,7 +112,6 @@ async function testAPI() {
   }
 }
 
-// Décommenter pour exécuter les tests
-// testAPI();
+ testAPI();
 
 export default testAPI;
