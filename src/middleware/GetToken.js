@@ -1,14 +1,16 @@
+import jwt from "jsonwebtoken";
+
 export const GetToken = (req, res, next) => {
   try {
-    const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
+    const authorization = req.headers.authorization;
+    const [scheme, token] = authorization?.split(" ") || [];
 
-    if (!token) {
+    if (scheme !== "Bearer" || !token) {
       return res.status(401).json({ message: "Token manquant." });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    
     if (!decoded?.id) {
       return res.status(401).json({ message: "Token invalide (payload incomplet)." });
     }

@@ -18,8 +18,8 @@ export const hashOtp = (code) => {
 /// debut transfer service section
 
 // ---- Étape 1 : demander le transfert -> génère le OTP ----
-export const requestTransfer = async (data) => {
-    const { senderId,ReceiverId,  amount } = data;
+export const requestTransfer = async (data, senderId) => {
+    const { ReceiverId, amount } = data;
 
     if (!amount || amount <= 0) {
         const error = new Error("Montant invalide");
@@ -49,7 +49,7 @@ export const requestTransfer = async (data) => {
 
     // Invalide tous les anciens OTP en attente pour ce user
     await trasfertOTP.updateMany(
-        { user: senderId, used: false },
+        { sender: senderId, used: false },
         { $set: { used: true } }
     );
 
@@ -70,8 +70,8 @@ export const requestTransfer = async (data) => {
 };
 
 // ---- Étape 2 : vérifier le code -> exécute le transfert ----
-export const verifyTransfer = async (data) => {
-    const { SenderId,ReceiverId,  amount, code } = data; 
+export const verifyTransfer = async (data, senderId) => {
+    const { ReceiverId, amount, code } = data;
 
     // verifacation du code  
       if (!code || !/^\d{6}$/.test(code)) {
@@ -81,7 +81,7 @@ export const verifyTransfer = async (data) => {
     }
 
     const otpDoc = await trasfertOTP.findOne({
-        sender: SenderId,
+        sender: senderId,
         receiver: ReceiverId,
         amount,
         used: false
@@ -140,7 +140,7 @@ export const verifyTransfer = async (data) => {
     session.startTransaction();
     try {
         const updatedSender = await User.findOneAndUpdate(
-            { _id: SenderId, solde: { $gte: amount } },
+            { _id: senderId, solde: { $gte: amount } },
             { $inc: { solde: -amount } },
             { new: true, session }
         );
