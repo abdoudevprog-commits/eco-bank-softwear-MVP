@@ -2,7 +2,7 @@
 
 ## Vue d’ensemble
 
-Eco Bank Software est une API bancaire développée avec Express.js. Elle fournit
+Eco Bank Software est un (server side) bancaire développée avec Express.js. il fournit
 une base de gestion des utilisateurs, de l’authentification et des opérations
 propres aux différents rôles de l’application.
 
